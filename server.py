@@ -1,10 +1,10 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, File, UploadFile
 import cv2
 import numpy as np
 
 app = FastAPI()
 
-latest_result = {"persons": 0}
+total_people = 0
 
 @app.get("/")
 def home():
@@ -12,23 +12,18 @@ def home():
 
 @app.post("/detect")
 async def detect(file: UploadFile = File(...)):
-
-    global latest_result
-
+    global total_people
+    
     image_bytes = await file.read()
+    np_arr = np.frombuffer(image_bytes, np.uint8)
+    frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
 
-    npimg = np.frombuffer(image_bytes, np.uint8)
-
-    frame = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
-
-    # Dummy detection for now
+    # simple detection placeholder
     persons = 1
 
-    latest_result["persons"] = persons
+    total_people += persons
 
-    return latest_result
-
-
-@app.get("/latest")
-def latest():
-    return latest_result
+    return {
+        "persons": persons,
+        "total_people_today": total_people
+    }
