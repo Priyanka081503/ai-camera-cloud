@@ -1,13 +1,14 @@
 from fastapi import FastAPI, UploadFile, File
 import cv2
 import numpy as np
-from ultralytics import YOLO
 
 app = FastAPI()
 
-model = YOLO("yolov8n.pt")
+latest_result = {"persons": 0}
 
-latest_result = {"persons":0}
+@app.get("/")
+def home():
+    return {"message": "AI Camera Server Running"}
 
 @app.post("/detect")
 async def detect(file: UploadFile = File(...)):
@@ -20,14 +21,8 @@ async def detect(file: UploadFile = File(...)):
 
     frame = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
 
-    results = model(frame)
-
-    persons = 0
-
-    for r in results:
-        for box in r.boxes:
-            if int(box.cls) == 0:
-                persons += 1
+    # Dummy detection for now
+    persons = 1
 
     latest_result["persons"] = persons
 
@@ -36,5 +31,4 @@ async def detect(file: UploadFile = File(...)):
 
 @app.get("/latest")
 def latest():
-
     return latest_result
