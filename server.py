@@ -1,6 +1,7 @@
 from fastapi import FastAPI, File, UploadFile
 import cv2
 import numpy as np
+from fastapi.responses import HTMLResponse
 
 app = FastAPI()
 
@@ -27,3 +28,17 @@ async def detect(file: UploadFile = File(...)):
         "persons": persons,
         "total_people_today": total_people
     }
+@app.get("/dashboard", response_class=HTMLResponse)
+def dashboard():
+    html = f"""
+    <html>
+    <head>
+        <title>AI Camera Dashboard</title>
+    </head>
+    <body>
+        <h1>AI Camera Analytics</h1>
+        <p>Total People Detected Today: {total_people}</p>
+    </body>
+    </html>
+    """
+    return html
