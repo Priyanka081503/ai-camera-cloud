@@ -19,7 +19,7 @@ async def detect(file: UploadFile = File(...)):
     np_arr = np.frombuffer(image_bytes, np.uint8)
     frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
 
-    # simple test detection
+    # temporary detection
     persons = 1
 
     total_people += persons
@@ -37,7 +37,7 @@ def dashboard():
         <title>AI Camera Dashboard</title>
     </head>
     <body>
-        <h1>AI Camera Analytics</h1>
+        <h1>AI Camera Dashboard</h1>
         <h2>Total People Detected Today: {total_people}</h2>
     </body>
     </html>
